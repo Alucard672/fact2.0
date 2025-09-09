@@ -1,0 +1,160 @@
+<!-- pages/index/index.wxml - 管理端首页 -->
+<view class="container">
+  <!-- 头部用户信息 -->
+  <view class="header">
+    <view class="user-info">
+      <image class="avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" />
+      <view class="user-details">
+        <text class="username">{{userInfo.name || '管理员'}}</text>
+        <text class="role">{{userInfo.role || '生产主管'}}</text>
+      </view>
+    </view>
+    <view class="current-time">
+      <text class="time">{{currentTime}}</text>
+      <text class="date">{{currentDate}}</text>
+    </view>
+  </view>
+
+  <!-- 今日概览 -->
+  <view class="overview-section">
+    <view class="section-title">今日概览</view>
+    <view class="overview-cards">
+      <view class="overview-card">
+        <view class="card-value">{{todayStats.totalProduction || 0}}</view>
+        <view class="card-label">总产量</view>
+        <view class="card-change {{todayStats.productionChange >= 0 ? 'positive' : 'negative'}}">
+          {{todayStats.productionChange >= 0 ? '+' : ''}}{{todayStats.productionChange || 0}}%
+        </view>
+      </view>
+      <view class="overview-card">
+        <view class="card-value">{{todayStats.activeWorkers || 0}}</view>
+        <view class="card-label">在岗人数</view>
+        <view class="card-change positive">{{todayStats.totalWorkers || 0}}人</view>
+      </view>
+      <view class="overview-card">
+        <view class="card-value">{{todayStats.completionRate || 0}}%</view>
+        <view class="card-label">完成率</view>
+        <view class="card-change {{todayStats.completionChange >= 0 ? 'positive' : 'negative'}}">
+          {{todayStats.completionChange >= 0 ? '+' : ''}}{{todayStats.completionChange || 0}}%
+        </view>
+      </view>
+      <view class="overview-card">
+        <view class="card-value">{{todayStats.qualityRate || 0}}%</view>
+        <view class="card-label">质量合格率</view>
+        <view class="card-change {{todayStats.qualityChange >= 0 ? 'positive' : 'negative'}}">
+          {{todayStats.qualityChange >= 0 ? '+' : ''}}{{todayStats.qualityChange || 0}}%
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 车间状态 -->
+  <view class="workshop-section">
+    <view class="section-title">
+      <text>车间状态</text>
+      <text class="refresh-btn" bindtap="refreshWorkshopStatus">刷新</text>
+    </view>
+    <scroll-view class="workshop-list" scroll-x="true">
+      <view class="workshop-item" wx:for="{{workshopList}}" wx:key="id">
+        <view class="workshop-header">
+          <text class="workshop-name">{{item.name}}</text>
+          <view class="workshop-status {{item.status}}">
+            <text>{{item.statusText}}</text>
+          </view>
+        </view>
+        <view class="workshop-stats">
+          <view class="stat-item">
+            <text class="stat-value">{{item.currentProduction}}</text>
+            <text class="stat-label">当前产量</text>
+          </view>
+          <view class="stat-item">
+            <text class="stat-value">{{item.activeWorkers}}</text>
+            <text class="stat-label">在岗人数</text>
+          </view>
+          <view class="stat-item">
+            <text class="stat-value">{{item.efficiency}}%</text>
+            <text class="stat-label">效率</text>
+          </view>
+        </view>
+        <view class="workshop-progress">
+          <view class="progress-bar">
+            <view class="progress-fill" style="width: {{item.completionRate}}%"></view>
+          </view>
+          <text class="progress-text">{{item.completionRate}}%</text>
+        </view>
+      </view>
+    </scroll-view>
+  </view>
+
+  <!-- 待处理事项 -->
+  <view class="pending-section">
+    <view class="section-title">
+      <text>待处理事项</text>
+      <text class="view-all" bindtap="viewAllPending">查看全部</text>
+    </view>
+    <view class="pending-list">
+      <view class="pending-item" wx:for="{{pendingList}}" wx:key="id" bindtap="handlePendingItem" data-item="{{item}}">
+        <view class="pending-icon {{item.type}}">
+          <text class="iconfont">{{item.icon}}</text>
+        </view>
+        <view class="pending-content">
+          <text class="pending-title">{{item.title}}</text>
+          <text class="pending-desc">{{item.description}}</text>
+          <text class="pending-time">{{item.createTime}}</text>
+        </view>
+        <view class="pending-priority {{item.priority}}">
+          <text>{{item.priorityText}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 快捷操作 -->
+  <view class="actions-section">
+    <view class="section-title">快捷操作</view>
+    <view class="action-grid">
+      <view class="action-item" bindtap="navigateToScan">
+        <view class="action-icon scan">
+          <text class="iconfont">📷</text>
+        </view>
+        <text class="action-label">扫码收包</text>
+      </view>
+      <view class="action-item" bindtap="navigateToStats">
+        <view class="action-icon stats">
+          <text class="iconfont">📊</text>
+        </view>
+        <text class="action-label">生产统计</text>
+      </view>
+      <view class="action-item" bindtap="navigateToApproval">
+        <view class="action-icon approval">
+          <text class="iconfont">✅</text>
+        </view>
+        <text class="action-label">审批管理</text>
+      </view>
+      <view class="action-item" bindtap="exportReport">
+        <view class="action-icon export">
+          <text class="iconfont">📋</text>
+        </view>
+        <text class="action-label">导出报表</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 实时通知 -->
+  <view class="notification-section" wx:if="{{notifications.length > 0}}">
+    <view class="section-title">实时通知</view>
+    <view class="notification-list">
+      <view class="notification-item" wx:for="{{notifications}}" wx:key="id">
+        <view class="notification-dot {{item.type}}"></view>
+        <view class="notification-content">
+          <text class="notification-text">{{item.message}}</text>
+          <text class="notification-time">{{item.time}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>
+
+
+
+

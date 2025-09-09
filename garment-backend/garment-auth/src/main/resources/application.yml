@@ -1,0 +1,53 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: garment-auth
+  profiles:
+    active: dev
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/garment_production?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: garment_user
+    password: garment_pass_2024
+  redis:
+    host: localhost
+    port: 6379
+    password: garment_redis_2024
+    database: 0
+    timeout: 10000ms
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+
+  autoconfigure:
+    exclude:
+      - springfox.documentation.spring.web.plugins.Docket
+      - springfox.documentation.swagger2.configuration.Swagger2DocumentationConfiguration
+      - springfox.documentation.spring.web.SpringfoxWebMvcConfiguration
+      - springfox.documentation.swagger2.annotations.EnableSwagger2
+
+logging:
+  level:
+    com.garment: debug
+    root: info
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{50} - %msg%n"
+
+# JWT配置（保持与common中默认一致或覆盖）
+garment:
+  jwt:
+    secret: garment-production-jwt-secret-key-2024
+    expiration: 1800000        # 30分钟
+    refresh-expiration: 604800000 # 7天
+
+# 微信小程序配置（请在本地 .env 或启动参数中覆盖 appId/appSecret）
+wechat:
+  miniapp:
+    appId: ${WECHAT_MINIAPP_APPID:your_appid_here}
+    appSecret: ${WECHAT_MINIAPP_SECRET:your_appsecret_here}
+    authUrl: https://api.weixin.qq.com/sns/jscode2session
+    userInfoUrl: https://api.weixin.qq.com/sns/userinfo
+    connectTimeout: 5000
+    readTimeout: 5000

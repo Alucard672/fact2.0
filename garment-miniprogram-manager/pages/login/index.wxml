@@ -1,0 +1,4 @@
+<view class="container">
+  <view class="logo">生产管理</view>
+  <button class="login-btn" type="primary" open-type="getPhoneNumber" bindgetphonenumber="onGetPhoneNumber" loading="{{loggingIn}}">手机号一键登录</button>
+</view>

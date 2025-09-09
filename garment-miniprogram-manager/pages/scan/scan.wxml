@@ -1,0 +1,118 @@
+<view class="page">
+  <!-- 扫码模式选择，仅管理员可见质检模式 -->
+  <view class="mode-switch">
+    <view class="mode-tab {{currentMode === 'receive' ? 'active' : ''}}" data-mode="receive" bindtap="switchMode">
+      收包
+    </view>
+    <view class="mode-tab {{currentMode === 'query' ? 'active' : ''}}" data-mode="query" bindtap="switchMode">
+      查询
+    </view>
+    <block wx:if="{{role === 'manager'}}">
+      <view class="mode-tab {{currentMode === 'inspect' ? 'active' : ''}}" data-mode="inspect" bindtap="switchMode">
+        质检
+      </view>
+    </block>
+  </view>
+
+  <!-- 扫码区域 -->
+  <view class="scan-section">
+    <view class="scan-title">{{scanTitle}}</view>
+    <view class="scan-desc">{{scanDesc}}</view>
+    <button class="scan-btn" bindtap="startScan">开始扫码</button>
+
+    <view class="manual-input">
+      <input class="manual-input-field" placeholder="或手动输入/粘贴二维码" bindinput="onManualInput" value="{{manualCode}}" />
+      <button class="input-btn" bindtap="handleManualCode" disabled="{{!manualCode}}">确认</button>
+    </view>
+  </view>
+
+  <!-- 扫码结果展示 -->
+  <view class="result-section" wx:if="{{scanResult}}">
+    <view class="result-title">扫码结果</view>
+    <view class="result-content">
+      <view class="result-item">
+        <text class="label">包号：</text>
+        <text class="value">{{scanResult.data.bundleNo || lastScanCode}}</text>
+      </view>
+      <view class="result-item" wx:if="{{scanResult.data.styleName}}">
+        <text class="label">款式：</text>
+        <text class="value">{{scanResult.data.styleName}}</text>
+      </view>
+      <view class="result-item" wx:if="{{scanResult.data.quantity}}">
+        <text class="label">数量：</text>
+        <text class="value">{{scanResult.data.quantity}}</text>
+      </view>
+      <view class="result-item" wx:if="{{scanResult.message}}">
+        <text class="label">提示：</text>
+        <text class="value">{{scanResult.message}}</text>
+      </view>
+    </view>
+
+    <view class="action-section">
+      <button class="action-btn primary" bindtap="confirmAction" disabled="{{isProcessing}}" loading="{{isProcessing}}">{{actionButtonText}}</button>
+      <button class="action-btn" bindtap="retryScan">重新扫码</button>
+    </view>
+  </view>
+
+  <!-- 质检表单 -->
+  <view class="inspect-form" wx:if="{{showInspectForm}}">
+    <view class="form-title">质检信息</view>
+    <view class="form-item">
+      <text class="label">合格数量</text>
+      <input class="input" type="number" data-field="qualifiedQuantity" bindinput="onInspectInput" value="{{inspectData.qualifiedQuantity}}" />
+    </view>
+    <view class="form-item">
+      <text class="label">次品数量</text>
+      <input class="input" type="number" data-field="defectQuantity" bindinput="onInspectInput" value="{{inspectData.defectQuantity}}" />
+    </view>
+    <view class="form-item">
+      <text class="label">质量评分</text>
+      <slider min="1" max="5" step="1" show-value="true" value="{{inspectData.qualityScore}}" bindchange="onQualityScoreChange" />
+    </view>
+    <view class="form-item switch">
+      <text class="label">需要返修</text>
+      <switch checked="{{inspectData.needRepair}}" bindchange="onRepairSwitchChange" />
+    </view>
+    <view class="form-item">
+      <text class="label">备注</text>
+      <textarea class="textarea" placeholder="填写备注" data-field="remark" bindinput="onInspectInput" value="{{inspectData.remark}}"></textarea>
+    </view>
+    <view class="form-actions">
+      <button class="form-btn" bindtap="cancelInspect">取消</button>
+      <button class="form-btn primary" bindtap="submitInspect" disabled="{{isSubmitting}}" loading="{{isSubmitting}}">提交</button>
+    </view>
+  </view>
+
+  <!-- 扫码历史 -->
+  <view class="history-section">
+    <view class="history-title">历史记录</view>
+    <block wx:if="{{scanHistory && scanHistory.length}}">
+      <block wx:for="{{scanHistory}}" wx:key="id">
+        <view class="history-item" bindtap="viewHistoryDetail" data-index="{{index}}" data-item="{{item}}">
+          <view class="row">
+            <text class="label">包号：</text>
+            <text class="value">{{item.bundleNo || item.code}}</text>
+          </view>
+          <view class="row">
+            <text class="label">操作：</text>
+            <text class="value">{{item.actionText || (item.mode === 'receive' ? '收包' : (item.mode === 'inspect' ? '质检' : '查看'))}}</text>
+          </view>
+          <view class="row">
+            <text class="label">时间：</text>
+            <text class="value">{{item.scanTime || item.displayTime}}</text>
+          </view>
+        </view>
+      </block>
+      <view class="history-actions">
+        <button class="clear-btn" bindtap="clearHistory">清空历史</button>
+      </view>
+    </block>
+    <block wx:else>
+      <view class="empty">暂无历史记录</view>
+    </block>
+  </view>
+</view>
+
+
+
+

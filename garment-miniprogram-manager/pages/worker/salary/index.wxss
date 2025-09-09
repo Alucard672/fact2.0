@@ -1,0 +1,2 @@
+.page { padding: 32rpx; }
+.placeholder { color: #999; text-align: center; margin-top: 200rpx; }

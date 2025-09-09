@@ -1,0 +1,7 @@
+.container { padding: 48rpx; }
+.logo { font-size: 40rpx; font-weight: 600; color: #1890ff; text-align: center; margin: 120rpx 0 80rpx; }
+.role-section { margin-bottom: 60rpx; }
+.label { display: block; color: #666; margin-bottom: 16rpx; }
+.role-group { display: flex; gap: 40rpx; }
+.role-item { display: flex; align-items: center; font-size: 28rpx; color: #333; }
+.login-btn { background: #1890ff; color: #fff; }

@@ -1,0 +1,523 @@
+/* pages/index/index.wxss - 管理端首页样式 */
+
+.container {
+  padding: 0;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 头部用户信息 */
+.header {
+  background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+  padding: 20rpx 30rpx 40rpx;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+  border: 2rpx solid rgba(255, 255, 255, 0.3);
+}
+
+.user-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.username {
+  font-size: 32rpx;
+  font-weight: bold;
+  margin-bottom: 8rpx;
+}
+
+.role {
+  font-size: 24rpx;
+  opacity: 0.8;
+}
+
+.current-time {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+}
+
+.time {
+  font-size: 36rpx;
+  font-weight: bold;
+  margin-bottom: 8rpx;
+}
+
+.date {
+  font-size: 24rpx;
+  opacity: 0.8;
+}
+
+/* 今日概览 */
+.overview-section {
+  margin: 30rpx;
+}
+
+.section-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 24rpx;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.refresh-btn {
+  font-size: 24rpx;
+  color: #1890ff;
+  font-weight: normal;
+}
+
+.overview-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+
+.overview-card {
+  flex: 1;
+  min-width: calc(50% - 10rpx);
+  background: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.overview-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6rpx;
+  background: linear-gradient(90deg, #1890ff, #52c41a);
+}
+
+.card-value {
+  font-size: 48rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 12rpx;
+}
+
+.card-label {
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 16rpx;
+}
+
+.card-change {
+  font-size: 20rpx;
+  padding: 4rpx 12rpx;
+  border-radius: 20rpx;
+  font-weight: 500;
+}
+
+.card-change.positive {
+  background: #f6ffed;
+  color: #52c41a;
+}
+
+.card-change.negative {
+  background: #fff2f0;
+  color: #f5222d;
+}
+
+/* 车间状态 */
+.workshop-section {
+  margin: 30rpx;
+}
+
+.workshop-list {
+  white-space: nowrap;
+  padding: 20rpx 0;
+}
+
+.workshop-item {
+  display: inline-block;
+  width: 300rpx;
+  background: white;
+  border-radius: 16rpx;
+  padding: 24rpx;
+  margin-right: 20rpx;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  vertical-align: top;
+}
+
+.workshop-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20rpx;
+}
+
+.workshop-name {
+  font-size: 28rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.workshop-status {
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 20rpx;
+  font-weight: 500;
+}
+
+.workshop-status.active {
+  background: #f6ffed;
+  color: #52c41a;
+}
+
+.workshop-status.busy {
+  background: #fff7e6;
+  color: #faad14;
+}
+
+.workshop-status.idle {
+  background: #f5f5f5;
+  color: #8c8c8c;
+}
+
+.workshop-stats {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20rpx;
+}
+
+.stat-item {
+  text-align: center;
+  flex: 1;
+}
+
+.stat-value {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #1890ff;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.stat-label {
+  font-size: 20rpx;
+  color: #666;
+}
+
+.workshop-progress {
+  display: flex;
+  align-items: center;
+  gap: 16rpx;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 12rpx;
+  background: #f5f5f5;
+  border-radius: 6rpx;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #1890ff, #52c41a);
+  transition: width 0.3s ease;
+}
+
+.progress-text {
+  font-size: 20rpx;
+  color: #666;
+  min-width: 60rpx;
+}
+
+/* 待处理事项 */
+.pending-section {
+  margin: 30rpx;
+}
+
+.view-all {
+  font-size: 24rpx;
+  color: #1890ff;
+  font-weight: normal;
+}
+
+.pending-list {
+  background: white;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+.pending-item {
+  display: flex;
+  align-items: center;
+  padding: 24rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.pending-item:last-child {
+  border-bottom: none;
+}
+
+.pending-icon {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 20rpx;
+  font-size: 32rpx;
+}
+
+.pending-icon.approval {
+  background: #e6f7ff;
+  color: #1890ff;
+}
+
+.pending-icon.quality {
+  background: #fff7e6;
+  color: #faad14;
+}
+
+.pending-icon.urgent {
+  background: #fff2f0;
+  color: #f5222d;
+}
+
+.pending-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.pending-title {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.pending-desc {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.pending-time {
+  font-size: 20rpx;
+  color: #999;
+}
+
+.pending-priority {
+  padding: 8rpx 16rpx;
+  border-radius: 20rpx;
+  font-size: 20rpx;
+  font-weight: 500;
+  text-align: center;
+  min-width: 80rpx;
+}
+
+.pending-priority.high {
+  background: #fff2f0;
+  color: #f5222d;
+}
+
+.pending-priority.medium {
+  background: #fff7e6;
+  color: #faad14;
+}
+
+.pending-priority.low {
+  background: #f6ffed;
+  color: #52c41a;
+}
+
+/* 快捷操作 */
+.actions-section {
+  margin: 30rpx;
+}
+
+.action-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20rpx;
+}
+
+.action-item {
+  flex: 1;
+  min-width: calc(50% - 10rpx);
+  background: white;
+  border-radius: 16rpx;
+  padding: 30rpx;
+  text-align: center;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+  transition: transform 0.2s ease;
+}
+
+.action-item:active {
+  transform: scale(0.98);
+}
+
+.action-icon {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20rpx;
+  font-size: 40rpx;
+}
+
+.action-icon.scan {
+  background: linear-gradient(135deg, #1890ff, #52c41a);
+  color: white;
+}
+
+.action-icon.stats {
+  background: linear-gradient(135deg, #faad14, #f5222d);
+  color: white;
+}
+
+.action-icon.approval {
+  background: linear-gradient(135deg, #52c41a, #1890ff);
+  color: white;
+}
+
+.action-icon.export {
+  background: linear-gradient(135deg, #722ed1, #eb2f96);
+  color: white;
+}
+
+.action-label {
+  font-size: 24rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+/* 实时通知 */
+.notification-section {
+  margin: 30rpx;
+  margin-bottom: 60rpx;
+}
+
+.notification-list {
+  background: white;
+  border-radius: 16rpx;
+  overflow: hidden;
+  box-shadow: 0 4rpx 20rpx rgba(0, 0, 0, 0.08);
+}
+
+.notification-item {
+  display: flex;
+  align-items: flex-start;
+  padding: 20rpx 24rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-dot {
+  width: 16rpx;
+  height: 16rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+  margin-top: 8rpx;
+  flex-shrink: 0;
+}
+
+.notification-dot.info {
+  background: #1890ff;
+}
+
+.notification-dot.warning {
+  background: #faad14;
+}
+
+.notification-dot.error {
+  background: #f5222d;
+}
+
+.notification-dot.success {
+  background: #52c41a;
+}
+
+.notification-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.notification-text {
+  font-size: 26rpx;
+  color: #333;
+  line-height: 1.4;
+}
+
+.notification-time {
+  font-size: 20rpx;
+  color: #999;
+}
+
+/* 空状态 */
+.empty-state {
+  text-align: center;
+  padding: 100rpx 40rpx;
+  color: #999;
+}
+
+.empty-icon {
+  font-size: 100rpx;
+  margin-bottom: 20rpx;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: 24rpx;
+}
+
+/* 加载状态 */
+.loading-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 60rpx;
+}
+
+.loading-spinner {
+  width: 60rpx;
+  height: 60rpx;
+  border: 4rpx solid #f3f3f3;
+  border-top: 4rpx solid #1890ff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+
+
+

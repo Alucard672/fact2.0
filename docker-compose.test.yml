@@ -1,0 +1,310 @@
+# 测试环境 Docker Compose 配置
+version: '3.8'
+
+services:
+  # MySQL 数据库
+  mysql:
+    image: mysql:8.0
+    container_name: garment-mysql-test
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: Test@123456
+      MYSQL_DATABASE: garment_test
+      MYSQL_USER: garment
+      MYSQL_PASSWORD: Garment@123
+      TZ: Asia/Shanghai
+    ports:
+      - "3307:3306"
+    volumes:
+      - mysql_test_data:/var/lib/mysql
+      - ./database/init:/docker-entrypoint-initdb.d
+    command: 
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --default-time-zone='+08:00'
+    networks:
+      - garment-test-network
+
+  # Redis 缓存
+  redis:
+    image: redis:7.0-alpine
+    container_name: garment-redis-test
+    restart: unless-stopped
+    ports:
+      - "6380:6379"
+    volumes:
+      - redis_test_data:/data
+    command: redis-server --appendonly yes --requirepass "Redis@123"
+    networks:
+      - garment-test-network
+
+  # 后端服务 - 认证模块
+  garment-auth:
+    build:
+      context: ./garment-backend/garment-auth
+      dockerfile: Dockerfile
+    container_name: garment-auth-test
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: test
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: garment_test
+      DB_USER: garment
+      DB_PASSWORD: Garment@123
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: Redis@123
+      JWT_SECRET: garment-test-jwt-secret-key-2024
+    ports:
+      - "8081:8080"
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - garment-test-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # 后端服务 - 管理模块
+  garment-admin:
+    build:
+      context: ./garment-backend/garment-admin
+      dockerfile: Dockerfile
+    container_name: garment-admin-test
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: test
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: garment_test
+      DB_USER: garment
+      DB_PASSWORD: Garment@123
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: Redis@123
+      AUTH_SERVICE_URL: http://garment-auth:8080
+    ports:
+      - "8082:8080"
+    depends_on:
+      - mysql
+      - redis
+      - garment-auth
+    networks:
+      - garment-test-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # 后端服务 - 基础数据模块
+  garment-basic:
+    build:
+      context: ./garment-backend/garment-basic
+      dockerfile: Dockerfile
+    container_name: garment-basic-test
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: test
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: garment_test
+      DB_USER: garment
+      DB_PASSWORD: Garment@123
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: Redis@123
+      AUTH_SERVICE_URL: http://garment-auth:8080
+    ports:
+      - "8083:8080"
+    depends_on:
+      - mysql
+      - redis
+      - garment-auth
+    networks:
+      - garment-test-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # 后端服务 - 生产管理模块
+  garment-production:
+    build:
+      context: ./garment-backend/garment-production
+      dockerfile: Dockerfile
+    container_name: garment-production-test
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: test
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: garment_test
+      DB_USER: garment
+      DB_PASSWORD: Garment@123
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: Redis@123
+      AUTH_SERVICE_URL: http://garment-auth:8080
+      BASIC_SERVICE_URL: http://garment-basic:8080
+    ports:
+      - "8084:8080"
+    depends_on:
+      - mysql
+      - redis
+      - garment-auth
+      - garment-basic
+    networks:
+      - garment-test-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # 后端服务 - 打印服务模块
+  garment-print:
+    build:
+      context: ./garment-backend/garment-print
+      dockerfile: Dockerfile
+    container_name: garment-print-test
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: test
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: garment_test
+      DB_USER: garment
+      DB_PASSWORD: Garment@123
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: Redis@123
+      PRODUCTION_SERVICE_URL: http://garment-production:8080
+    ports:
+      - "8085:8080"
+    depends_on:
+      - mysql
+      - redis
+      - garment-production
+    networks:
+      - garment-test-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # 后端服务 - 统计分析模块
+  garment-stats:
+    build:
+      context: ./garment-backend/garment-stats
+      dockerfile: Dockerfile
+    container_name: garment-stats-test
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: test
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: garment_test
+      DB_USER: garment
+      DB_PASSWORD: Garment@123
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: Redis@123
+      PRODUCTION_SERVICE_URL: http://garment-production:8080
+      PAYROLL_SERVICE_URL: http://garment-payroll:8080
+    ports:
+      - "8086:8080"
+    depends_on:
+      - mysql
+      - redis
+      - garment-production
+    networks:
+      - garment-test-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # 后端服务 - 计件工资模块
+  garment-payroll:
+    build:
+      context: ./garment-backend/garment-payroll
+      dockerfile: Dockerfile
+    container_name: garment-payroll-test
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: test
+      DB_HOST: mysql
+      DB_PORT: 3306
+      DB_NAME: garment_test
+      DB_USER: garment
+      DB_password: Garment@123
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      REDIS_PASSWORD: Redis@123
+      PRODUCTION_SERVICE_URL: http://garment-production:8080
+      BASIC_SERVICE_URL: http://garment-basic:8080
+    ports:
+      - "8087:8080"
+    depends_on:
+      - mysql
+      - redis
+      - garment-production
+      - garment-basic
+    networks:
+      - garment-test-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # Nginx 反向代理
+  nginx:
+    image: nginx:1.24-alpine
+    container_name: garment-nginx-test
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/test/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/test/conf.d:/etc/nginx/conf.d
+      - ./garment-frontend/dist:/usr/share/nginx/html
+      - nginx_test_logs:/var/log/nginx
+    depends_on:
+      - garment-auth
+      - garment-admin
+      - garment-basic
+      - garment-production
+      - garment-print
+      - garment-stats
+      - garment-payroll
+    networks:
+      - garment-test-network
+
+volumes:
+  mysql_test_data:
+    driver: local
+  redis_test_data:
+    driver: local
+  nginx_test_logs:
+    driver: local
+
+networks:
+  garment-test-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
+
+
+

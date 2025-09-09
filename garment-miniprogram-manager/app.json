@@ -1,0 +1,49 @@
+{
+  "pages": [
+    "pages/login/index",
+    "pages/index/index",
+    "pages/scan/scan",
+    "pages/worker/records/index",
+    "pages/worker/salary/index"
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#1890ff",
+    "navigationBarTitleText": "生产管理",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#f5f5f5"
+  },
+  "tabBar": {
+    "custom": true,
+    "color": "#666666",
+    "selectedColor": "#1890ff",
+    "backgroundColor": "#ffffff",
+    "borderStyle": "black",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "工作台"
+      },
+      {
+        "pagePath": "pages/scan/scan",
+        "text": "扫码"
+      },
+      {
+        "pagePath": "pages/worker/records/index",
+        "text": "工单"
+      },
+      {
+        "pagePath": "pages/worker/salary/index",
+        "text": "工资"
+      }
+    ]
+  },
+  "requiredBackgroundModes": ["location"],
+  "style": "v2",
+  "sitemapLocation": "sitemap.json",
+  "lazyCodeLoading": "requiredComponents"
+}
+
+
+
+

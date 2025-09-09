@@ -1,0 +1,490 @@
+/* pages/scan/scan.wxss - 管理端扫码页面样式 */
+
+.container {
+  padding: 0;
+  background-color: #f5f5f5;
+  min-height: 100vh;
+}
+
+/* 模式选择 */
+.mode-selector {
+  background: white;
+  padding: 20rpx 30rpx;
+  box-shadow: 0 2rpx 10rpx rgba(0, 0, 0, 0.1);
+}
+
+.mode-tabs {
+  display: flex;
+  border-radius: 12rpx;
+  background: #f5f5f5;
+  padding: 8rpx;
+}
+
+.mode-tab {
+  flex: 1;
+  text-align: center;
+  padding: 20rpx;
+  border-radius: 8rpx;
+  transition: all 0.3s ease;
+}
+
+.mode-tab.active {
+  background: #1890ff;
+  color: white;
+  box-shadow: 0 4rpx 12rpx rgba(24, 144, 255, 0.3);
+}
+
+.tab-text {
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+/* 扫码区域 */
+.scan-area {
+  margin: 40rpx 30rpx;
+  background: white;
+  border-radius: 20rpx;
+  padding: 40rpx;
+  text-align: center;
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.1);
+}
+
+.scan-header {
+  margin-bottom: 60rpx;
+}
+
+.scan-title {
+  font-size: 36rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 16rpx;
+}
+
+.scan-desc {
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.5;
+}
+
+.scan-button {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1890ff, #52c41a);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 60rpx;
+  box-shadow: 0 10rpx 30rpx rgba(24, 144, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.scan-button:active {
+  transform: scale(0.95);
+  box-shadow: 0 5rpx 15rpx rgba(24, 144, 255, 0.4);
+}
+
+.scan-icon {
+  font-size: 80rpx;
+  color: white;
+  margin-bottom: 10rpx;
+}
+
+.scan-text {
+  font-size: 24rpx;
+  color: white;
+  font-weight: 500;
+}
+
+.manual-input {
+  display: flex;
+  gap: 20rpx;
+  align-items: center;
+}
+
+.input-field {
+  flex: 1;
+  height: 80rpx;
+  border: 2rpx solid #e8e8e8;
+  border-radius: 12rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  background: #fafafa;
+}
+
+.input-field:focus {
+  border-color: #1890ff;
+  background: white;
+}
+
+.input-btn {
+  height: 80rpx;
+  padding: 0 32rpx;
+  background: #1890ff;
+  color: white;
+  border: none;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+}
+
+.input-btn[disabled] {
+  background: #d9d9d9;
+  color: #bfbfbf;
+}
+
+/* 扫码结果 */
+.scan-result {
+  margin: 30rpx;
+  background: white;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.1);
+}
+
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.result-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.result-status {
+  padding: 12rpx 24rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.result-status.success {
+  background: #f6ffed;
+  color: #52c41a;
+}
+
+.result-status.error {
+  background: #fff2f0;
+  color: #f5222d;
+}
+
+.result-content {
+  padding: 30rpx;
+}
+
+.bundle-info {
+  margin-bottom: 40rpx;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  font-size: 26rpx;
+  color: #666;
+  font-weight: 500;
+}
+
+.info-value {
+  font-size: 26rpx;
+  color: #333;
+  font-weight: 500;
+}
+
+.info-value.status-pending {
+  color: #faad14;
+}
+
+.info-value.status-in-work {
+  color: #1890ff;
+}
+
+.info-value.status-completed {
+  color: #52c41a;
+}
+
+.info-value.status-returned {
+  color: #f5222d;
+}
+
+.action-buttons {
+  display: flex;
+  gap: 20rpx;
+}
+
+.action-btn {
+  flex: 1;
+  height: 80rpx;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  border: none;
+}
+
+.action-btn.primary {
+  background: #1890ff;
+  color: white;
+}
+
+.action-btn.secondary {
+  background: #f5f5f5;
+  color: #666;
+}
+
+.result-error {
+  text-align: center;
+  padding: 60rpx 30rpx;
+}
+
+.error-message {
+  font-size: 28rpx;
+  color: #f5222d;
+  margin-bottom: 40rpx;
+  line-height: 1.5;
+}
+
+.retry-btn {
+  padding: 20rpx 40rpx;
+  background: #1890ff;
+  color: white;
+  border: none;
+  border-radius: 12rpx;
+  font-size: 26rpx;
+}
+
+/* 质检表单 */
+.inspect-form {
+  margin: 30rpx;
+  background: white;
+  border-radius: 20rpx;
+  padding: 30rpx;
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.1);
+}
+
+.form-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 40rpx;
+  text-align: center;
+}
+
+.form-item {
+  margin-bottom: 40rpx;
+}
+
+.form-label {
+  display: block;
+  font-size: 26rpx;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 16rpx;
+}
+
+.form-input {
+  width: 100%;
+  height: 80rpx;
+  border: 2rpx solid #e8e8e8;
+  border-radius: 12rpx;
+  padding: 0 24rpx;
+  font-size: 28rpx;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  border-color: #1890ff;
+}
+
+.form-slider {
+  margin: 20rpx 0;
+}
+
+.form-switch {
+  transform: scale(1.2);
+}
+
+.form-textarea {
+  width: 100%;
+  min-height: 120rpx;
+  border: 2rpx solid #e8e8e8;
+  border-radius: 12rpx;
+  padding: 20rpx;
+  font-size: 26rpx;
+  box-sizing: border-box;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 20rpx;
+  margin-top: 60rpx;
+}
+
+.form-btn {
+  flex: 1;
+  height: 80rpx;
+  border-radius: 12rpx;
+  font-size: 28rpx;
+  font-weight: 500;
+  border: none;
+}
+
+.form-btn.primary {
+  background: #1890ff;
+  color: white;
+}
+
+.form-btn.secondary {
+  background: #f5f5f5;
+  color: #666;
+}
+
+/* 历史记录 */
+.scan-history {
+  margin: 30rpx;
+  background: white;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 30rpx rgba(0, 0, 0, 0.1);
+}
+
+.history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 30rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.history-title {
+  font-size: 32rpx;
+  font-weight: bold;
+  color: #333;
+}
+
+.clear-history {
+  font-size: 24rpx;
+  color: #f5222d;
+}
+
+.history-list {
+  max-height: 600rpx;
+}
+
+.history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24rpx 30rpx;
+  border-bottom: 1rpx solid #f5f5f5;
+}
+
+.history-item:last-child {
+  border-bottom: none;
+}
+
+.history-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.history-bundle {
+  font-size: 28rpx;
+  font-weight: 500;
+  color: #333;
+}
+
+.history-action {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.history-time {
+  font-size: 20rpx;
+  color: #999;
+}
+
+.history-status {
+  width: 60rpx;
+  height: 60rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32rpx;
+  font-weight: bold;
+}
+
+.history-status.success {
+  background: #f6ffed;
+  color: #52c41a;
+}
+
+.history-status.error {
+  background: #fff2f0;
+  color: #f5222d;
+}
+
+/* 空状态 */
+.empty-state {
+  text-align: center;
+  padding: 100rpx 40rpx;
+  color: #999;
+}
+
+.empty-icon {
+  font-size: 100rpx;
+  margin-bottom: 20rpx;
+  opacity: 0.5;
+}
+
+.empty-text {
+  font-size: 24rpx;
+}
+
+/* 响应式调整 */
+@media (max-width: 750rpx) {
+  .scan-button {
+    width: 160rpx;
+    height: 160rpx;
+  }
+  
+  .scan-icon {
+    font-size: 60rpx;
+  }
+  
+  .manual-input {
+    flex-direction: column;
+    gap: 20rpx;
+  }
+  
+  .input-field,
+  .input-btn {
+    width: 100%;
+  }
+  
+  .action-buttons,
+  .form-buttons {
+    flex-direction: column;
+  }
+}
+
+
+
+
