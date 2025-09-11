@@ -410,7 +410,7 @@ public class InvitationService {
         TenantContext.setCurrentUserRole(role);
         
         // 调用认证服务生成令牌
-        return authService.generateLoginResultForUser(user, tenantId, role);
+        return authService.generateLoginResult(user, tenantId, role);
     }
 
     /**

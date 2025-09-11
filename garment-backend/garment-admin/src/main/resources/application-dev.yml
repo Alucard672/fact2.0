@@ -2,14 +2,14 @@
 spring:
   # 数据源配置
   datasource:
-    url: jdbc:mysql://localhost:3307/garment_production?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/garment_production?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
     username: garment_user
     password: garment_pass_2024
   
   # Redis配置
   redis:
     host: localhost
-    port: 6380
+    port: 6399
     password: garment_redis_2024
 
 # 日志配置

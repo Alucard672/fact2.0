@@ -14,14 +14,14 @@ services:
       MYSQL_PASSWORD: Garment@123
       TZ: Asia/Shanghai
     ports:
-      - "3307:3306"
+      - "3308:3306"
     volumes:
       - mysql_test_data:/var/lib/mysql
       - ./database/init:/docker-entrypoint-initdb.d
     command: 
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
-      - --default-time-zone='+08:00'
+      - --default-time-zone=+08:00
     networks:
       - garment-test-network
 
@@ -31,7 +31,7 @@ services:
     container_name: garment-redis-test
     restart: unless-stopped
     ports:
-      - "6380:6379"
+      - "6381:6379"
     volumes:
       - redis_test_data:/data
     command: redis-server --appendonly yes --requirepass "Redis@123"
@@ -47,24 +47,22 @@ services:
     restart: unless-stopped
     environment:
       SPRING_PROFILES_ACTIVE: test
-      DB_HOST: mysql
-      DB_PORT: 3306
-      DB_NAME: garment_test
-      DB_USER: garment
-      DB_PASSWORD: Garment@123
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      REDIS_PASSWORD: Redis@123
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/garment_test?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+      SPRING_DATASOURCE_USERNAME: garment
+      SPRING_DATASOURCE_PASSWORD: Garment@123
+      SPRING_REDIS_HOST: redis
+      SPRING_REDIS_PORT: 6379
+      SPRING_REDIS_PASSWORD: Redis@123
       JWT_SECRET: garment-test-jwt-secret-key-2024
     ports:
-      - "8081:8080"
+      - "8081:8081"
     depends_on:
       - mysql
       - redis
     networks:
       - garment-test-network
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8080/actuator/health"]
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -245,7 +243,7 @@ services:
       DB_PORT: 3306
       DB_NAME: garment_test
       DB_USER: garment
-      DB_password: Garment@123
+      DB_PASSWORD: Garment@123
       REDIS_HOST: redis
       REDIS_PORT: 6379
       REDIS_PASSWORD: Redis@123
@@ -303,7 +301,7 @@ networks:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.20.0.0/16
+        - subnet: 172.25.0.0/16
 
 
 

@@ -217,13 +217,30 @@ const handlePhoneLogin = async () => {
     if (valid) {
       loading.value = true
       try {
-        const success = await userStore.login({
+        // 使用手机号登录接口
+        const res = await import('@/api/auth').then(m => m.phoneLogin({
           phone: phoneForm.phone,
           smsCode: phoneForm.smsCode,
           tenantCode: phoneForm.tenantCode
-        })
-        if (success) {
-          const redirect = route.query.redirect as string || '/'
+        }))
+        if (res.success) {
+          // 与账号密码登录流程保持一致：写入 Pinia 与本地存储
+          const data = res.data as any
+          if (data && data.tokenInfo) {
+            // 直接复用 userStore 的状态写入逻辑
+            // 由于 loginAction 封装在账号密码接口，这里手动写入
+            ;(userStore as any).$patch({
+              token: data.tokenInfo.accessToken,
+              refreshTokenValue: data.tokenInfo.refreshToken,
+              userInfo: data.userInfo || data.user,
+              currentTenant: data.tenantInfo || data.tenant,
+              roles: (data.userInfo?.roles || data.user?.roles) || [],
+              permissions: (data.userInfo?.permissions || data.user?.permissions) || []
+            })
+            localStorage.setItem('token', data.tokenInfo.accessToken)
+            localStorage.setItem('refreshToken', data.tokenInfo.refreshToken)
+          }
+          const redirect = (route.query.redirect as string) || '/'
           router.push(redirect)
         }
       } catch (error) {

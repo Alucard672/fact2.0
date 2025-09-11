@@ -122,7 +122,7 @@ public class TenantSwitchService {
         }
 
         // 5. 生成新的登录结果（包含新的租户信息）
-        LoginResult result = authService.generateLoginResultForUser(user, request.getTenantId(), tenantUser.getRole());
+        LoginResult result = authService.generateLoginResult(user, request.getTenantId(), tenantUser.getRole());
 
         log.info("租户切换成功: userId={}, newTenantId={}, role={}", userId, request.getTenantId(), tenantUser.getRole());
         

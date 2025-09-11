@@ -82,7 +82,7 @@ public class AuthService {
         userMapper.updateLastLoginInfo(user.getId(), getClientIp(), currentTenantId);
 
         // 生成令牌
-        return generateLoginResult(user, currentTenantId);
+        return generateLoginResult(user, currentTenantId, null);
     }
 
     /**
@@ -113,7 +113,7 @@ public class AuthService {
         userMapper.updateLastLoginInfo(user.getId(), getClientIp(), currentTenantId);
 
         // 生成令牌
-        return generateLoginResult(user, currentTenantId);
+        return generateLoginResult(user, currentTenantId, null);
     }
 
     /**
@@ -152,7 +152,7 @@ public class AuthService {
             userMapper.updateLastLoginInfo(user.getId(), getClientIp(), currentTenantId);
 
             // 5. 生成令牌
-            return generateLoginResult(user, currentTenantId);
+            return generateLoginResult(user, currentTenantId, null);
             
         } catch (BusinessException e) {
             throw e;
@@ -337,10 +337,26 @@ public class AuthService {
         return currentTenantId;
     }
 
+
+
+
+
     /**
-     * 为用户生成登录结果（供其他服务调用）
+     * 生成登录结果（支持可选角色）
      */
-    public LoginResult generateLoginResultForUser(User user, Long tenantId, String role) {
+    public LoginResult generateLoginResult(User user, Long tenantId, String explicitRole) {
+        // 角色计算：优先使用显式角色，否则从租户关系推断，默认 user
+        String role = explicitRole;
+        if (!StringUtils.hasText(role)) {
+            role = "user";
+            if (tenantId != null) {
+                TenantUser tenantUser = tenantUserMapper.findByUserIdAndTenantId(user.getId(), tenantId);
+                if (tenantUser != null && StringUtils.hasText(tenantUser.getRole())) {
+                    role = tenantUser.getRole();
+                }
+            }
+        }
+
         // 生成令牌
         String accessToken = jwtTokenUtil.generateAccessToken(user.getId(), user.getUsername(), tenantId, role);
         String refreshToken = jwtTokenUtil.generateRefreshToken(user.getId(), user.getUsername());
@@ -382,59 +398,6 @@ public class AuthService {
         return result;
     }
 
-    /**
-     * 生成登录结果
-     */
-    public LoginResult generateLoginResult(User user, Long tenantId) {
-        // 获取用户角色
-        String role = "user";
-        if (tenantId != null) {
-            TenantUser tenantUser = tenantUserMapper.findByUserIdAndTenantId(user.getId(), tenantId);
-            if (tenantUser != null) {
-                role = tenantUser.getRole();
-            }
-        }
-
-        // 生成令牌
-        String accessToken = jwtTokenUtil.generateAccessToken(user.getId(), user.getUsername(), tenantId, role);
-        String refreshToken = jwtTokenUtil.generateRefreshToken(user.getId(), user.getUsername());
-
-        // 构建登录结果
-        LoginResult result = new LoginResult();
-        result.setAccessToken(accessToken);
-        result.setRefreshToken(refreshToken);
-        result.setExpiresIn(1800L); // 30分钟
-
-        // 用户信息
-        LoginResult.UserInfo userInfo = new LoginResult.UserInfo();
-        userInfo.setId(user.getId());
-        userInfo.setUsername(user.getUsername());
-        userInfo.setPhone(user.getPhone());
-        userInfo.setName(user.getName());
-        userInfo.setAvatar(user.getAvatar());
-        userInfo.setCurrentTenantId(tenantId);
-        userInfo.setRole(role);
-        userInfo.setLastLoginTime(LocalDateTime.now());
-        // TODO: 设置权限列表
-        result.setUser(userInfo);
-
-        // 租户信息
-        if (tenantId != null) {
-            Tenant tenant = tenantMapper.selectById(tenantId);
-            if (tenant != null) {
-                LoginResult.TenantInfo tenantInfo = new LoginResult.TenantInfo();
-                tenantInfo.setId(tenant.getId());
-                tenantInfo.setTenantCode(tenant.getTenantCode());
-                tenantInfo.setCompanyName(tenant.getCompanyName());
-                tenantInfo.setCompanyType(tenant.getCompanyType());
-                tenantInfo.setSubscriptionPlan(tenant.getSubscriptionPlan());
-                tenantInfo.setStatus(tenant.getStatus());
-                result.setTenant(tenantInfo);
-            }
-        }
-
-        return result;
-    }
 
     /**
      * 生成6位数字验证码
@@ -576,8 +539,8 @@ public class AuthService {
         
         // 5. 生成登录结果（若本次默认赋予了角色，带上该角色）
         if (StringUtils.hasText(role)) {
-            return generateLoginResultForUser(user, currentTenantId, role);
+            return generateLoginResult(user, currentTenantId, role);
         }
-        return generateLoginResult(user, currentTenantId);
+        return generateLoginResult(user, currentTenantId, null);
     }
 }

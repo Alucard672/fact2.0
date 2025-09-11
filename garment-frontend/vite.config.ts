@@ -32,6 +32,13 @@ export default defineConfig({
     port: 3000,
     open: true,
     proxy: {
+      // 认证服务走 8081（更精确的前缀必须放在更前面，避免被下面的 /api 捕获）
+      '/api/auth': {
+        target: 'http://localhost:8081',
+        changeOrigin: true,
+        ws: true
+      },
+      // 其余网关（admin服务）走 8080
       '/api': {
         target: 'http://localhost:8080',
         changeOrigin: true,
@@ -44,9 +51,16 @@ export default defineConfig({
     chunkSizeWarningLimit: 1500,
     rollupOptions: {
       output: {
-        manualChunks: {
-          'element-plus': ['element-plus'],
-          'vendor': ['vue', 'vue-router', 'pinia', 'axios']
+        manualChunks(id) {
+          if (id.includes('node_modules')) {
+            if (id.includes('element-plus')) {
+              return 'element-plus'
+            }
+            if (id.includes('vue') || id.includes('pinia') || id.includes('axios')) {
+              return 'vendor'
+            }
+            return 'vendor'
+          }
         }
       }
     }

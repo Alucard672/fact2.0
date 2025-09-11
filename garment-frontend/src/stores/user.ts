@@ -28,19 +28,19 @@ export const useUserStore = defineStore('user', () => {
   async function loginAction(loginForm: LoginRequest) {
     try {
       const res = await login(loginForm)
-      if (res.success) {
-        const { tokenInfo, userInfo: user, tenantInfo } = res.data
+      if (res.data.success) {
+        const { accessToken, refreshToken: refToken, user, tenant } = res.data.data
         
         // 保存Token
-        token.value = tokenInfo.accessToken
-        refreshTokenValue.value = tokenInfo.refreshToken
-        localStorage.setItem('token', tokenInfo.accessToken)
-        localStorage.setItem('refreshToken', tokenInfo.refreshToken)
+        token.value = accessToken
+        refreshTokenValue.value = refToken
+        localStorage.setItem('token', accessToken)
+        localStorage.setItem('refreshToken', refToken)
         
         // 保存用户信息
         userInfo.value = user
-        currentTenant.value = tenantInfo || null
-        roles.value = user.roles || []
+        currentTenant.value = tenant || null
+        roles.value = user.roles || [user.role] || []
         permissions.value = user.permissions || []
         
         ElMessage.success('登录成功')

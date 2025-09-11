@@ -8,18 +8,18 @@ spring:
     active: dev
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3307/garment_production?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
-    username: garment_user
-    password: garment_pass_2024
+    url: jdbc:mysql://127.0.0.1:3307/garment_test?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true
+    username: garment
+    password: Garment@123
   flyway:
-    enabled: true
+    enabled: false
     locations: classpath:db/migration
     baseline-on-migrate: true
     baseline-version: 0
   redis:
-    host: localhost
+    host: 127.0.0.1
     port: 6380
-    password: garment_redis_2024
+    password: Redis@123
     database: 0
     timeout: 10000ms
     lettuce:

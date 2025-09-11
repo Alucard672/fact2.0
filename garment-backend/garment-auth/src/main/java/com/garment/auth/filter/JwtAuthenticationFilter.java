@@ -4,6 +4,7 @@ import com.garment.common.context.TenantContext;
 import com.garment.common.utils.JwtTokenUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,6 +35,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailsService userDetailsService;
 
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, 
                                     HttpServletResponse response, 
@@ -46,6 +50,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         try {
             // 验证token
             if (StringUtils.hasText(token) && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+                // 黑名单校验：若 token 在黑名单中，直接跳过认证，由后续处理为未授权
+                try {
+                    String blacklistKey = "jwt:blacklist:" + token;
+                    if (stringRedisTemplate != null && Boolean.TRUE.equals(stringRedisTemplate.hasKey(blacklistKey))) {
+                        log.info("检测到黑名单令牌，拒绝认证");
+                        TenantContext.clear();
+                        SecurityContextHolder.clearContext();
+                        filterChain.doFilter(request, response);
+                        return;
+                    }
+                } catch (Exception ex) {
+                    // 黑名单检查失败不应影响正常认证流程，仅记录日志
+                    log.warn("黑名单校验异常: {}", ex.getMessage());
+                }
                 
                 // 从token中获取用户信息
                 String username = jwtTokenUtil.getUsernameFromToken(token);

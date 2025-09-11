@@ -1,7 +1,7 @@
 /**
  * Axios请求封装
  */
-import axios, { AxiosError, AxiosInstance, AxiosRequestConfig, AxiosResponse } from 'axios'
+import axios, { AxiosError, AxiosInstance, AxiosResponse, InternalAxiosRequestConfig, AxiosRequestConfig } from 'axios'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
@@ -25,10 +25,20 @@ NProgress.configure({
 })
 
 // 创建Axios实例
+const normalizeBaseUrl = (url?: string) => {
+  if (!url || url.trim() === '') return '/api';
+  // 去掉末尾多余斜杠
+  let u = url.trim().replace(/\/+$/, '');
+  // 若不以 /api 结尾，则补上 /api
+  if (!/\/api$/.test(u)) u = `${u}/api`;
+  return u;
+};
+
 const request: AxiosInstance = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL || '/api',
+  baseURL: normalizeBaseUrl(import.meta.env.VITE_API_BASE_URL),
   timeout: 30000,
-  withCredentials: true,
+  // 基于 Bearer Token 的认证，不需要携带跨域 Cookie，避免与 CORS 冲突
+  withCredentials: false,
   headers: {
     'Content-Type': 'application/json'
   }
@@ -36,7 +46,7 @@ const request: AxiosInstance = axios.create({
 
 // 请求拦截器
 request.interceptors.request.use(
-  (config: AxiosRequestConfig) => {
+  (config: InternalAxiosRequestConfig) => {
     NProgress.start()
     
     const userStore = useUserStore()
@@ -132,7 +142,8 @@ request.interceptors.response.use(
       return Promise.reject(new Error(res.message || 'Error'))
     }
 
-    return res
+    // 保持返回 AxiosResponse，调用方通过 .data 取数据
+    return response
   },
   (error: AxiosError) => {
     NProgress.done()
