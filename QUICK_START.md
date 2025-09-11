@@ -75,7 +75,7 @@ npm run dev
 ```
 
 ### 小程序开发
-1. 使用微信开发者工具打开 `garment-miniprogram-worker` 或 `garment-miniprogram-manager` 目录
+1. 使用微信开发者工具打开 `garment-miniprogram-manager` 目录
 2. 配置小程序AppID
 3. 点击编译预览
 
@@ -158,12 +158,6 @@ docker-compose -f docker-compose.test.yml down -v
 ```
 
 ## 📱 小程序配置
-
-### 工人端小程序
-1. 打开微信开发者工具
-2. 导入项目：选择 `garment-miniprogram-worker` 目录
-3. 修改 `utils/config.js` 中的API地址
-4. 编译并预览
 
 ### 管理端小程序
 1. 打开微信开发者工具
